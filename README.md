@@ -1,2 +1,2 @@
-# Particle Filtering assignment
-Assignment on filters
+# COMP6257: Particle Filtering assignment
+Assignment on Particle filters
