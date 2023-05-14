@@ -12,6 +12,7 @@ from stonesoup.models.transition.linear import CombinedLinearGaussianTransitionM
 
 from stonesoup.types.detection import Detection
 from stonesoup.models.measurement.linear import LinearGaussian
+from stonesoup.models.measurement.nonlinear import CartesianToBearingRange
 
 np.random.seed(1991)
 
@@ -48,6 +49,28 @@ def linear_measurement(truth_path, w=5) -> list:
         measurement = measurement_model.function(state, noise=True)
         measurements.append(Detection(measurement,
                                       timestamp=state.timestamp,
+                                      measurement_model=measurement_model))
+        
+    return measurements, measurement_model
+
+
+def bearing_range_measurement(truth_path) -> list:
+    sensor_x = 50  # Placing the sensor off-centre
+    sensor_y = 0
+
+    measurement_model = CartesianToBearingRange(
+        ndim_state=4,
+        mapping=(0, 2),
+        noise_covar=np.diag([np.radians(0.2), 1]),  # Covariance matrix. 0.2 degree variance in
+        # bearing and 1 metre in range
+        translation_offset=np.array([[sensor_x], [sensor_y]])  # Offset measurements to location of
+        # sensor in cartesian.
+    )
+
+    measurements = []
+    for state in truth_path:
+        measurement = measurement_model.function(state, noise=True)
+        measurements.append(Detection(measurement, timestamp=state.timestamp,
                                       measurement_model=measurement_model))
         
     return measurements, measurement_model
