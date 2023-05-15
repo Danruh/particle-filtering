@@ -14,6 +14,10 @@ from stonesoup.types.detection import Detection
 from stonesoup.models.measurement.linear import LinearGaussian
 from stonesoup.models.measurement.nonlinear import CartesianToBearingRange
 
+from stonesoup.predictor.kalman import ExtendedKalmanPredictor
+from stonesoup.updater.kalman import ExtendedKalmanUpdater
+
+
 np.random.seed(1991)
 
 def generate_linearish_path(q_x, q_y) -> GroundTruthPath:
@@ -95,7 +99,20 @@ def linear_kalman_filter(transition_model, measurement_model, measurements, star
 
 
 def extended_kalman_filter(transition_model, measurement_model, measurements, start_time) -> Track:
-    pass
+    predictor = ExtendedKalmanPredictor(transition_model)    
+    updater = ExtendedKalmanUpdater(measurement_model)
+
+    prior = GaussianState([[0], [1], [0], [1]], np.diag([1.5, 0.5, 1.5, 0.5]), timestamp=start_time)
+
+    track = Track()
+    for measurement in measurements:
+        prediction = predictor.predict(prior, timestamp=measurement.timestamp)
+        hypothesis = SingleHypothesis(prediction, measurement)  # Group a prediction and measurement
+        post = updater.update(hypothesis)
+        track.append(post)
+        prior = track[-1]
+
+    return track
 
 
 if __name__ == '__main__':
