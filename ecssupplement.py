@@ -1,4 +1,6 @@
 import numpy as np
+from numpy.linalg import inv, det
+
 from datetime import datetime, timedelta
 from stonesoup.predictor.kalman import KalmanPredictor
 from stonesoup.updater.kalman import KalmanUpdater
@@ -125,12 +127,19 @@ def gaussian_entropy(state) -> list:
     return gaussian.entropy()
 
 
-def kl_divergence(sensor_0, sensor_1):
-    ...
+def kl_divergence(state_0, state_1):
+    covar_0 = state_0.measurement_model.noise_covar
+    covar_1 = state_1.measurement_model.noise_covar
 
+    mu_0 = state_0.state_vector
+    mu_1 = state_1.state_vector
 
-def chernoff_divergence():
-    ...
+    d = 2
+
+    kl =  0.5 * (mu_0 - mu_1).T @ inv(covar_1) @ (mu_0 - mu_1) \
+        + 0.5 * (np.trace(inv(covar_1) @ covar_0) - d +  np.log(det(covar_1) / det(covar_0)))
+    
+    return kl.flatten().flatten()[0]
 
 
 def renyi_divergence():
