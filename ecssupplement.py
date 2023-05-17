@@ -17,6 +17,7 @@ from stonesoup.models.measurement.nonlinear import CartesianToBearingRange
 from stonesoup.predictor.kalman import ExtendedKalmanPredictor
 from stonesoup.updater.kalman import ExtendedKalmanUpdater
 
+from scipy.stats import multivariate_normal
 
 np.random.seed(1991)
 
@@ -113,6 +114,27 @@ def extended_kalman_filter(transition_model, measurement_model, measurements, st
         prior = track[-1]
 
     return track
+
+
+def gaussian_entropy(state) -> list:
+    mean  = state.state_vector.flatten()
+    covar = state.covar
+
+    gaussian = multivariate_normal(mean=mean, cov=covar)
+
+    return gaussian.entropy()
+
+
+def kl_divergence(sensor_0, sensor_1):
+    ...
+
+
+def chernoff_divergence():
+    ...
+
+
+def renyi_divergence():
+    ...
 
 
 if __name__ == '__main__':
