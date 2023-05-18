@@ -1,2 +1,2 @@
-# COMP6257: Particle Filtering assignment
-Assignment on Particle filters
+# COMP6257: Practical Filtering assignment
+Assignment on Practical filters
