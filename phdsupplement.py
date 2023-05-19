@@ -1,3 +1,8 @@
+####################################################
+# Supplementary code for the phd_filtering notebook
+# Code modified from https://stonesoup.readthedocs.io/en/v0.1b12/auto_tutorials/filters/GMPHDTutorial.html#sphx-glr-auto-tutorials-filters-gmphdtutorial-py
+####################################################
+
 from matplotlib import pyplot as plt
 import numpy as np
 from ordered_set import OrderedSet
@@ -46,12 +51,6 @@ def gen_ground_truths(start_time, birth_probability, death_probability, number_s
     current_truths = set()
     start_truths = set()
 
-    #start_time = datetime.now()
-
-    # death_probability = 0.005
-    # birth_probability = 0.2
-
-    # Initialize 3 truths. This can be changed to any number of truths you wish.
     truths_by_time.append([])
     for i in range(3):
         x, y = initial_position = np.random.uniform(-30, 30, 2)  # Range [-30, 30] for x and y
@@ -114,10 +113,8 @@ def gen_detectors(truths, start_time, number_steps, w=0.75, probability_detectio
             try:
                 truth_state = truth[timestamp]
             except IndexError:
-                # This truth not alive at this time. Skip this iteration of the for loop.
                 continue
 
-            # Generate actual detection from the state with a 10% chance that no detection is received.
             if np.random.rand() <= probability_detection:
                 # Generate actual detection from the state
                 measurement = measurement_model.function(truth_state, noise=True)
