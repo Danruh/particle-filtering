@@ -1,3 +1,7 @@
+#################################################
+# Supplementary code for kalman_filtering.ipynb
+#################################################
+
 import numpy as np
 from numpy.linalg import inv, det
 
@@ -140,10 +144,6 @@ def kl_divergence(state_0, state_1):
         + 0.5 * (np.trace(inv(covar_1) @ covar_0) - d +  np.log(det(covar_1) / det(covar_0)))
     
     return kl.flatten().flatten()[0]
-
-
-def renyi_divergence():
-    ...
 
 
 if __name__ == '__main__':
